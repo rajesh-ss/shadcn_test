@@ -58,27 +58,24 @@ const App: React.FC = () => {
 	function onSubmit(values: z.infer<typeof formSchema>) {
 		console.log(values);
 	}
+
+	if (form?.formState?.errors?.password?.message) {
+		console.log(form.formState.errors.password.message.split(',').length);
+	}
+
 	return (
 		<div className="flex min-h-screen items-center justify-center bg-slate-50">
-			<div className="space-x-5">
-				<button className="relative overflow-hidden rounded-sm bg-red-700 px-5 py-3 text-lg font-medium uppercase tracking-wider text-[#ffb4b4] text-gray-50 shadow-md shadow-gray-400/50">
-					Button
-				</button>
-				<button className="relative overflow-hidden rounded-sm bg-gradient-to-r from-indigo-400 to-cyan-400 px-5 py-3 text-lg font-medium uppercase tracking-wider text-gray-50 shadow-md shadow-gray-400/50 ">
-					Button
-				</button>
-			</div>
-			<Button className="mx-5 bg-opacity-80 px-10 py-7" colors={'primary'} ripple>
+			{/* <Button className="mx-5 bg-opacity-80 px-10 py-7" colors={'primary'} ripple>
 				ss
-			</Button>
+			</Button> */}
 
-			<Button className="mx-5 bg-btn-primary px-10  py-7 text-btn-primary-foreground" variant={'default'} colors={'success'} ripple>
+			{/* <Button className="mx-5 bg-btn-primary px-10  py-7 text-btn-primary-foreground" variant={'default'} colors={'success'} ripple>
 				red
-			</Button>
+			</Button> */}
 
-			<Button className="mx-5 px-10  py-7" variant={'contained'} colors={'success'} ripple>
+			{/* <Button className="mx-5 px-10  py-7" variant={'contained'} colors={'success'} ripple>
 				success
-			</Button>
+			</Button> */}
 
 			<Form {...form}>
 				<form noValidate onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -89,8 +86,52 @@ const App: React.FC = () => {
 							<FormItem>
 								<FormLabel>password</FormLabel>
 								<FormControl>
-									<Input {...field} onChange={(e) => field.onChange(e.target.value.toUpperCase())} maxLength={13} />
+									<Input id="hs-strong-password-base" {...field} onChange={(e) => field.onChange(e.target.value)} maxLength={12} />
 								</FormControl>
+								{form.formState?.errors?.password?.message ? (
+									<>
+										<div className="grid w-full grid-cols-12 gap-2 border-0 border-[red]">
+											<div
+												className={`col-span-3 h-2 rounded-xl 
+												${form.formState.errors.password.message.split(',').length > 3 && form.formState.errors.password.message.split(',').length <= 5 ? 'bg-[red]' : ''}
+												${form.formState.errors.password.message.split(',').length <= 3 && form.formState.errors.password.message.split(',').length >= 1 ? 'bg-[orange]' : ''}
+												${form.formState.errors.password.message.split(',').length <= 1 && form.formState.errors.password.message.split(',').length > 0 ? 'bg-[green]' : ''}
+												${form.formState.errors.password.message.split(',').length < 5 ? 'block' : 'hidden'}`}
+											></div>
+											<div
+												className={`col-span-3 h-2 rounded-xl 
+												${form.formState.errors.password.message.split(',').length > 3 && form.formState.errors.password.message.split(',').length <= 5 ? 'bg-[red]' : ''}
+												${form.formState.errors.password.message.split(',').length <= 3 && form.formState.errors.password.message.split(',').length >= 1 ? 'bg-[orange]' : ''}
+												${form.formState.errors.password.message.split(',').length < 1 && form.formState.errors.password.message.split(',').length > 0 ? 'bg-[green]' : ''}
+												${form.formState.errors.password.message.split(',').length <= 1 ? 'block' : 'hidden'}`}
+											></div>
+											<div
+												className={`col-span-3 h-2 rounded-xl 
+												${form.formState.errors.password.message.split(',').length > 3 && form.formState.errors.password.message.split(',').length <= 5 ? 'bg-[red]' : ''}
+												${form.formState.errors.password.message.split(',').length <= 3 && form.formState.errors.password.message.split(',').length >= 1 ? 'bg-[orange]' : ''}
+												${form.formState.errors.password.message.split(',').length < 1 && form.formState.errors.password.message.split(',').length > 0 ? 'bg-[green]' : ''}
+												${form.formState.errors.password.message.split(',').length <= 2 ? 'block' : 'hidden'}`}
+											></div>
+											<div
+												className={`col-span-3 h-2 rounded-xl 
+												${form.formState.errors.password.message.split(',').length > 3 && form.formState.errors.password.message.split(',').length <= 5 ? 'bg-[red]' : ''}
+												${form.formState.errors.password.message.split(',').length <= 3 && form.formState.errors.password.message.split(',').length >= 1 ? 'bg-[orange]' : ''}
+												${form.formState.errors.password.message.split(',').length < 1 && form.formState.errors.password.message.split(',').length > 0 ? 'bg-[green]' : ''}
+												${form.formState.errors.password.message.split(',').length <= 3 ? 'block' : 'hidden'}`}
+											></div>
+										</div>
+									</>
+								) : (
+									<>
+										<div className="grid w-full grid-cols-12 gap-2 border-0 border-[red]">
+											<div className={`col-span-3 h-2 rounded-xl ${field.value === '' ? 'hidden' : 'bg-[green]'}`}></div>
+											<div className={`col-span-3 h-2 rounded-xl ${field.value === '' ? 'hidden' : 'bg-[green]'}`}></div>
+											<div className={`col-span-3 h-2 rounded-xl ${field.value === '' ? 'hidden' : 'bg-[green]'}`}></div>
+											<div className={`col-span-3 h-2 rounded-xl ${field.value === '' ? 'hidden' : 'bg-[green]'}`}></div>
+										</div>
+									</>
+								)}
+
 								{form.formState?.errors?.password?.message ? (
 									<>
 										<ul>{form.formState?.errors?.password?.message?.split(',').map((err) => <li className="text-[red]">{err}</li>)}</ul>
@@ -101,7 +142,7 @@ const App: React.FC = () => {
 							</FormItem>
 						)}
 					/>
-					<Button type="submit" variant="contained" colors="primary">
+					<Button type="submit" variant="contained" colors="primary" ripple>
 						Submit
 					</Button>
 				</form>
