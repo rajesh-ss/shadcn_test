@@ -1,154 +1,173 @@
-// App.tsx
-import { zodResolver } from '@hookform/resolvers/zod';
-import React from 'react';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { Button } from './components/ui/button';
-import { Form, FormControl, FormField, FormItem, FormLabel } from './components/ui/form';
-import { Input } from './components/ui/input';
-import './index.css';
+"use client"
 
-const formSchema = z
-	.object({
-		password: z.string(),
-	})
-	.superRefine(({ password }, ctx) => {
-		type err = { code: string; message: string };
-		const errors: err[] = [];
-		if (!/[a-z]/.test(password)) {
-			errors.push({ code: z.ZodIssueCode.custom, message: 'At least one lowercase letter should be added' });
-		}
-		if (!/[A-Z]/.test(password)) {
-			errors.push({ code: z.ZodIssueCode.custom, message: 'At least one uppercase letter should be added' });
-		}
-		if (!/\d+/.test(password)) {
-			errors.push({ code: z.ZodIssueCode.custom, message: 'At least one digit should be added' });
-		}
-		if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(password)) {
-			errors.push({ code: z.ZodIssueCode.custom, message: 'At least one special character should be added' });
-		}
-		if (!/.{8,}/.test(password)) {
-			errors.push({ code: z.ZodIssueCode.custom, message: 'Minimum 8 characters should be present' });
-		}
-		if (/.{13,}/.test(password)) {
-			errors.push({ code: z.ZodIssueCode.custom, message: 'maximum 12 characters are only allowed' });
-		}
+import * as React from "react"
+import { DropdownMenuCheckboxItemProps } from "@radix-ui/react-dropdown-menu"
+import { RxCrossCircled } from "react-icons/rx";
+import { Button } from "@/components/ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
-		if (errors.length > 0) {
-			ctx.addIssue({
-				code: z.ZodIssueCode.custom,
-				message: errors.map((error) => error.message).join(', '),
-				path: ['password'],
-			});
-		}
+type Checked = DropdownMenuCheckboxItemProps["checked"]
 
-		return true;
-	});
 
-const App: React.FC = () => {
-	// 1. Define your form.
-	const form = useForm<z.infer<typeof formSchema>>({
-		mode: 'onChange',
-		reValidateMode: 'onChange',
-		resolver: zodResolver(formSchema),
-		defaultValues: {
-			password: '',
-		},
-	});
-	function onSubmit(values: z.infer<typeof formSchema>) {
-		console.log(values);
+type optionsType = {
+	name:string;
+	checked:DropdownMenuCheckboxItemProps["checked"];
+}[]
+
+const initialType: optionsType = [
+	{
+		name: 'dataOne',
+		checked: false
+	},
+	{
+		name: 'dataTwo',
+		checked: true
+	},
+	{
+		name: 'dataThree',
+		checked: false
+	},
+	{
+		name: 'dataFour',
+		checked: true
+	},
+	{
+		name: 'dataFive',
+		checked: false
+	},
+	{
+		name: 'dataSix',
+		checked: true
+	},
+	{
+		name: 'dataSeven',
+		checked: false
+	},
+	{
+		name: 'dataEight',
+		checked: true
+	},
+	{
+		name: 'dataNine',
+		checked: false
+	},
+	{
+		name: 'dataTen',
+		checked: true
+	},
+	{
+		name: 'dataEleven',
+		checked: false
+	},
+	{
+		name: 'dataTwelve',
+		checked: true
+	},
+	{
+		name: 'dataThirteen',
+		checked: false
+	},
+	{
+		name: 'dataFourteen',
+		checked: true
+	},
+	{
+		name: 'dataFifteen',
+		checked: false
+	},
+	{
+		name: 'dataSixteen',
+		checked: true
+	},
+	{
+		name: 'dataSeventeen',
+		checked: false
+	},
+	{
+		name: 'dataEighteen',
+		checked: true
+	},
+	{
+		name: 'dataNineteen',
+		checked: false
+	},
+	{
+		name: 'dataTwenty',
+		checked: true
 	}
+]
 
-	if (form?.formState?.errors?.password?.message) {
-		console.log(form.formState.errors.password.message.split(',').length);
-	}
+const App = () => {
 
-	return (
-		<div className="flex min-h-screen items-center justify-center bg-slate-50">
-			{/* <Button className="mx-5 bg-opacity-80 px-10 py-7" colors={'primary'} ripple>
-				ss
-			</Button> */}
+  const [showStatusBar, setShowStatusBar] = React.useState<Checked>(true)
+  const [showActivityBar, setShowActivityBar] = React.useState<Checked>(false)
+  const [showPanel, setShowPanel] = React.useState<Checked>(false)
+  const [options, setOptions] = React.useState<optionsType>(initialType);
 
-			{/* <Button className="mx-5 bg-btn-primary px-10  py-7 text-btn-primary-foreground" variant={'default'} colors={'success'} ripple>
-				red
-			</Button> */}
 
-			{/* <Button className="mx-5 px-10  py-7" variant={'contained'} colors={'success'} ripple>
-				success
-			</Button> */}
 
-			<Form {...form}>
-				<form noValidate onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-					<FormField
-						control={form.control}
-						name="password"
-						render={({ field }) => (
-							<FormItem>
-								<FormLabel>password</FormLabel>
-								<FormControl>
-									<Input id="hs-strong-password-base" {...field} onChange={(e) => field.onChange(e.target.value)} maxLength={12} />
-								</FormControl>
-								{form.formState?.errors?.password?.message ? (
-									<>
-										<div className="grid w-full grid-cols-12 gap-2 border-0 border-[red]">
-											<div
-												className={`col-span-3 h-2 rounded-xl 
-												${form.formState.errors.password.message.split(',').length > 3 && form.formState.errors.password.message.split(',').length <= 5 ? 'bg-[red]' : ''}
-												${form.formState.errors.password.message.split(',').length <= 3 && form.formState.errors.password.message.split(',').length >= 1 ? 'bg-[orange]' : ''}
-												${form.formState.errors.password.message.split(',').length <= 1 && form.formState.errors.password.message.split(',').length > 0 ? 'bg-[green]' : ''}
-												${form.formState.errors.password.message.split(',').length < 5 ? 'block' : 'hidden'}`}
-											></div>
-											<div
-												className={`col-span-3 h-2 rounded-xl 
-												${form.formState.errors.password.message.split(',').length > 3 && form.formState.errors.password.message.split(',').length <= 5 ? 'bg-[red]' : ''}
-												${form.formState.errors.password.message.split(',').length <= 3 && form.formState.errors.password.message.split(',').length >= 1 ? 'bg-[orange]' : ''}
-												${form.formState.errors.password.message.split(',').length < 1 && form.formState.errors.password.message.split(',').length > 0 ? 'bg-[green]' : ''}
-												${form.formState.errors.password.message.split(',').length <= 1 ? 'block' : 'hidden'}`}
-											></div>
-											<div
-												className={`col-span-3 h-2 rounded-xl 
-												${form.formState.errors.password.message.split(',').length > 3 && form.formState.errors.password.message.split(',').length <= 5 ? 'bg-[red]' : ''}
-												${form.formState.errors.password.message.split(',').length <= 3 && form.formState.errors.password.message.split(',').length >= 1 ? 'bg-[orange]' : ''}
-												${form.formState.errors.password.message.split(',').length < 1 && form.formState.errors.password.message.split(',').length > 0 ? 'bg-[green]' : ''}
-												${form.formState.errors.password.message.split(',').length <= 2 ? 'block' : 'hidden'}`}
-											></div>
-											<div
-												className={`col-span-3 h-2 rounded-xl 
-												${form.formState.errors.password.message.split(',').length > 3 && form.formState.errors.password.message.split(',').length <= 5 ? 'bg-[red]' : ''}
-												${form.formState.errors.password.message.split(',').length <= 3 && form.formState.errors.password.message.split(',').length >= 1 ? 'bg-[orange]' : ''}
-												${form.formState.errors.password.message.split(',').length < 1 && form.formState.errors.password.message.split(',').length > 0 ? 'bg-[green]' : ''}
-												${form.formState.errors.password.message.split(',').length <= 3 ? 'block' : 'hidden'}`}
-											></div>
-										</div>
-									</>
-								) : (
-									<>
-										<div className="grid w-full grid-cols-12 gap-2 border-0 border-[red]">
-											<div className={`col-span-3 h-2 rounded-xl ${field.value === '' ? 'hidden' : 'bg-[green]'}`}></div>
-											<div className={`col-span-3 h-2 rounded-xl ${field.value === '' ? 'hidden' : 'bg-[green]'}`}></div>
-											<div className={`col-span-3 h-2 rounded-xl ${field.value === '' ? 'hidden' : 'bg-[green]'}`}></div>
-											<div className={`col-span-3 h-2 rounded-xl ${field.value === '' ? 'hidden' : 'bg-[green]'}`}></div>
-										</div>
-									</>
-								)}
 
-								{form.formState?.errors?.password?.message ? (
-									<>
-										<ul>{form.formState?.errors?.password?.message?.split(',').map((err) => <li className="text-[red]">{err}</li>)}</ul>
-									</>
-								) : (
-									<></>
-								)}
-							</FormItem>
-						)}
-					/>
-					<Button type="submit" variant="contained" colors="primary" ripple>
-						Submit
-					</Button>
-				</form>
-			</Form>
+  const onClickUncheck = (name: string)=>{
+	setOptions(prev =>
+		prev.map(eachData =>
+		  eachData.name === name ? { ...eachData, checked: false } : eachData
+		)
+	  )
+  }
+
+  const changeSelectedData = (event:boolean, name:string)=>{
+
+    setOptions(prev =>
+		prev.map(eachData =>
+		  eachData.name === name ? { ...eachData, checked: event } : eachData
+		)
+	  )
+
+  }
+
+  return (
+	<div className="border-2 border-red-600 mt-10 p-8 flex flex-col gap-10 justify-center items-center">
+		
+		<div className="border-2 border-red-600 p-6 flex justify-start items-center flex-wrap gap-5">
+
+		{
+			options?.map((eachData)=> 
+				eachData?.checked === true ? <span className="flex gap-2 items-center justify-center border-2 border-red-600 rounded-xl py-2 px-3">
+				<p>{eachData?.name}</p><RxCrossCircled className="text-xl text-red-600 hover:scale-110 cursor-pointer" onClick={()=>onClickUncheck(eachData?.name)}/> 
+			</span>:''
+			
+			)
+		}
 		</div>
-	);
-};
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="outline">Open</Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="w-56 bg-white">
+	  <DropdownMenuLabel>Custom DropDown</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+		{
+			options?.map((eachData)=> <div>
+        <DropdownMenuCheckboxItem
+          checked={eachData?.checked}
+          onCheckedChange={(event) => changeSelectedData(event, eachData?.name)}
+        >
+          {eachData?.name}
+        </DropdownMenuCheckboxItem>
+			</div>)
+		}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  </div>
+  )
+}
 
-export default App;
+
+export default App
